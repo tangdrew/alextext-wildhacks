@@ -25,11 +25,11 @@ var https = require('https');
 */
 
 var contacts = {
-    Cary: "+16302615888", 
-    Tang: "+18327889328",
-    Dan: "+16308541819", 
-    Mom: "+16308541819",
-    Susie: "+13234811364"
+    cary: "16302615888", 
+    tang: "+18327889328",
+    dan: "+16308541819", 
+    mom: "+16308541819",
+    susie: "+13234811364"
 }
 
 /**
@@ -172,13 +172,14 @@ function handleStartMessageRequest(intent, session, response) {
         speech: "<speak>What is the message you want to send to " + recipient + " </speak>",
         type: AlexaSkill.speechOutputType.SSML
     }
-
+    session.attributes = {sessionRecipient: recipient};
     response.ask(output);
 }
 
 function handleSendMessageRequest(intent, session, response) {
     var message = intent.slots.message.value;
-    var recipient = intent.slots.recipient.value;
+    var recipient = session.attributes.sessionRecipient.toLowerCase();
+
     sendText(message, recipient, function() {
         var speechOutput = {
             speech: "<speak> Sending " + message + " to " + recipient + " </speak>",
@@ -194,6 +195,3 @@ exports.handler = function (event, context) {
     var skill = new MessagingSkill();
     skill.execute(event, context);
 };
-
-
-getTexts(3, function(){});
