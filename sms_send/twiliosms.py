@@ -4,7 +4,7 @@ import csv
 # load contacts into dictionary
 
 contacts = {}
-csvfile = open('sms_send/contacts.csv')
+csvfile = open('./contacts.csv')
 reader=csv.reader(csvfile)
 for row in reader:
 	contacts[row[0]] = row[1]
@@ -24,8 +24,9 @@ def send():
 	mess = input("What do you want to say? ")
 	
 	if mess != 'Nevermind':
-		message = client.message.create(body=mess,
-			to=dest,
+		message = client.messages.create(
+			body=mess,
+			to=contacts[dest],
 			from_="+12242035200")
 
 def get_list(phone_number, n):
@@ -40,7 +41,8 @@ def get_list(phone_number, n):
 		script.append(convo[n-i-1])
 	return script
 		
+send()
 
-c = get_list(contacts["Coby"],4)
-for i in range(0, len(c)):
-	print(c[i].date_sent)
+# c = get_list(contacts["Coby"],4)
+# for i in range(0, len(c)):
+# 	print(c[i].date_sent)

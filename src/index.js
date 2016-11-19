@@ -9,7 +9,7 @@
 /**
  * App ID for the skill
  */
-var APP_ID = 'amzn1.ask.skill.ea33393c-60e7-48f5-ba16-32d361b6013b';
+var APP_ID = 'amzn1.ask.skill.0e9e92cd-c015-4796-87a4-1a9dfadafdc7';
 
 /**
  * Twilio Credentials
@@ -25,11 +25,11 @@ var https = require('https');
 */
 
 var contacts = {
-    Cary: "16302615888", 
-    Tang: "+18327889328",
-    Dan: "+16308541819", 
-    Mom: "+16308541819",
-    Susie: "+13234811364"
+    cary: "16302615888", 
+    tang: "+18327889328",
+    dan: "+16308541819", 
+    mom: "+16308541819",
+    susie: "+13234811364"
 }
 
 /**
@@ -109,8 +109,17 @@ function getTexts(limit, callback) {
         for(var i = 0; i < limit; i ++) {
             msgArr.push(data.messages[i]);
         }
-        callback(msgArr);
+        callback(msgArr.reverse());
     });
+}
+
+function numberToContactName(number) {
+    for(name in contacts) {
+        if(contacts[name] == number){
+            return name;
+        }
+    }
+    return 'Unknown';
 }
 
 function handleReadMessagesRequest(intent, session, response) {
@@ -131,7 +140,8 @@ function handleReadMessagesRequest(intent, session, response) {
         getTexts(numMessages, function(msgArr){
             var speechStr = '';
             msgArr.forEach(function(msg) {
-                speechStr = speechStr + '<p>' + msg.from + ' sent you the message ' + msg.body + '</p>';
+                var name = numberToContactName(msg.from);
+                speechStr = speechStr + '<p>' + name + ' sent you ' + msg.body + '</p>';
             });
 
             speechOutput = {
@@ -162,13 +172,14 @@ function handleStartMessageRequest(intent, session, response) {
         speech: "<speak>What is the message you want to send to " + recipient + " </speak>",
         type: AlexaSkill.speechOutputType.SSML
     }
-
+    session.attributes = {sessionRecipient: recipient};
     response.ask(output);
 }
 
 function handleSendMessageRequest(intent, session, response) {
     var message = intent.slots.message.value;
-    var recipient = intent.slots.recipient.value;
+    var recipient = session.attributes.sessionRecipient.toLowerCase();
+
     sendText(message, recipient, function() {
         var speechOutput = {
             speech: "<speak> Sending " + message + " to " + recipient + " </speak>",
@@ -184,6 +195,3 @@ exports.handler = function (event, context) {
     var skill = new MessagingSkill();
     skill.execute(event, context);
 };
-
-
-getTexts(3, function(){});
