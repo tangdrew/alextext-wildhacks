@@ -3,7 +3,7 @@ import csv
 
 # load contacts into dictionary
 
-contacts = {"Coby": "+16508147855", "Susie": "+13234811364"}
+contacts = {"Coby": "+16508147855", "Susie": "+13234811364", "Tristan": "+14044220074"}
 # csvfile = open('sms_send/contacts.csv')
 # reader=csv.reader(csvfile)
 # for row in reader:
@@ -40,6 +40,9 @@ def get_list(phone_number, n):
 		
 # send()
 
-c = get_list(contacts["Coby"],4)
+per = input('What conversation do you want see? ')
+num = int(input('How many texts? '))
+
+c = get_list(contacts[per],num)
 for i in range(0, len(c)):
 	print(c[i].date_sent, c[i].body)
