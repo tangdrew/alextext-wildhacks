@@ -49,15 +49,22 @@ MessagingSkill.prototype.eventHandlers.onSessionEnded = function (sessionEndedRe
 };
 
 MessagingSkill.prototype.intentHandlers = {
-    "ReadMessagesIntent": function(intent, session, response) {
+    // register custom intent handlers
+    "HelloWorldIntent": function (intent, session, response) {
+        response.tellWithCard("Hello World!", "Hello World", "Hello World!");
+    },
+    "ReadMessagesIntent": function (intent, session, response) {
         handleReadMessagesRequest(intent, session, response);
+    },
+    "AMAZON.HelpIntent": function (intent, session, response) {
+        response.ask("You can say hello to me!", "You can say hello to me!");
     }
 };
 
 function handleReadMessagesRequest(intent, session, response) {
     var speechOutput = {
         speech: "<speak> These are messages </speak>",
-        type: AlexaSkill.speechOutput.SSML
+        type: AlexaSkill.speechOutputType.SSML
     }
     response.tell(speechOutput);
 }

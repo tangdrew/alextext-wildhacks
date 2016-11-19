@@ -1,1 +1,1 @@
-ReadMessageIntent read messages
+ReadMessagesIntent read messages
