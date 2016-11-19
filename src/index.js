@@ -11,6 +11,13 @@
  */
 var APP_ID = 'amzn1.ask.skill.0e9e92cd-c015-4796-87a4-1a9dfadafdc7';
 
+/**
+ * Twilio Credentials
+ */
+var accountSid = 'AC938472e9120f0c46d2f7e15a61825d4a'; 
+var authToken = '9fede4428c7bd0fc4586a0954da61b9a'; 
+var client = require('twilio')(accountSid, authToken); 
+
 var https = require('https');
 
 /**
