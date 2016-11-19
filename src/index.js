@@ -50,10 +50,13 @@ MessagingSkill.prototype.eventHandlers.onSessionEnded = function (sessionEndedRe
 
 MessagingSkill.prototype.intentHandlers = {
     // register custom intent handlers
+    "StartMessageIntent": function (intent, session, response) {
+        handleStartMessageRequest(intent, session, response);
+    },
     "ReadMessagesIntent": function (intent, session, response) {
         handleReadMessagesRequest(intent, session, response);
     },
-    "SendMessageRequest": function(intent, session, response) {
+    "SendMessageIntent": function(intent, session, response) {
         handleSendMessageRequest(intent, session, response);
     },
     "AMAZON.HelpIntent": function (intent, session, response) {
@@ -84,6 +87,7 @@ function handleReadMessagesRequest(intent, session, response) {
 
     response.tell(speechOutput);
 }
+
 function handleStartMessageRequest(intent, session, response) {
     var recipient = null;
 
@@ -91,27 +95,29 @@ function handleStartMessageRequest(intent, session, response) {
         recipient = intent.slots.recipient.value;
     }
     else {
-        followUp = {
-            speech: "<speak> Hey, try that again and include who you want to send your message to. </speak>"
+        var followUp = {
+            speech: "<speak> Hey, try that again and include who you want to send your message to. </speak>",
             type: AlexaSkill.speechOutputType.SSML
         }
         response.tell(followUp);
     }
 
-    output = {
-        speech: "<speak>The recipient looks like:" + tyepof recipient +" </speak>",
+    var output = {
+        speech: "<speak>What is the message you want to send to " + recipient + " </speak>",
         type: AlexaSkill.speechOutputType.SSML
     }
 
-    response.tell(output)
+    response.ask(output);
 }
 
-
-
-
-}
 function handleSendMessageRequest(intent, session, response) {
-    //pass
+    var message = intent.slots.message;
+
+    var speechOutput = {
+        speech: "<speak> Sending message </speak>",
+        type: AlexaSkill.speechOutputType.SSML
+    };
+    response.tell(speechOutput);
 }
 
 // Create the handler that responds to the Alexa Request.
