@@ -30,7 +30,9 @@ var contacts = {
     dan: "+16308541819", 
     mom: "+16308541819",
     susie: "+13234811364",
-    twilio: "+12242035200"
+    coby: "+16508147855",
+    twilio: "+12242035200",
+    tristan: "+14044220074"
 }
 
 /**
@@ -114,6 +116,38 @@ function getTexts(limit, callback) {
     });
 }
 
+function getConversation(person, limit, callback) {
+    client.messages.list({
+        to: contacts[person]
+    },function(err, data1) { // data1 has all the messages 
+        client.messages.list({
+        from: contacts[person]
+        },function(err, data2) {
+            var msgArr = []
+            var n = 0;
+            var i = 0;
+            var j = 0;
+            while(n<limit) {
+                if (Date.parse(data1.messages[i].date_sent) > 
+                    Date.parse(data2.messages[i].date_sent))  
+                {
+                    msgArr.push(data1.messages[i]);
+                    i++;
+                } else {
+                    msgArr.push(data2.messages[j]);
+                    j++;
+                }
+                console.log(msgArr[n].date_sent)
+                console.log(msgArr[n].body)
+                n++;
+            }
+            callback(msgArr.reverse());}
+        
+
+    )
+})
+}
+
 function numberToContactName(number) {
     for(name in contacts) {
         if(contacts[name] == number){
@@ -138,7 +172,7 @@ function handleReadMessagesRequest(intent, session, response) {
         }
     }
     else {
-        getTexts(numMessages, function(msgArr){
+        getTexts(person, numMessages, function(msgArr){
             var speechStr = '';
             msgArr.forEach(function(msg) {
                 var name = numberToContactName(msg.from);
