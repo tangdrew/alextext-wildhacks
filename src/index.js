@@ -101,6 +101,18 @@ function sendText(msgBody, recipient, callback) {
     });
 }
 
+function getTexts(limit, callback) {
+    client.messages.list({
+        to: "+12242035200"
+    },function(err, data) {
+        var msgArr = []
+        for(var i = 0; i < limit; i ++) {
+            msgArr.push(data.messages[i]);
+        }
+        callback(msgArr);
+    });
+}
+
 function handleReadMessagesRequest(intent, session, response) {
     var numMessages = 5;
     var speechOutput = null;
@@ -116,13 +128,20 @@ function handleReadMessagesRequest(intent, session, response) {
         }
     }
     else {
-        speechOutput = {
-            speech: "<speak> Reading " + numMessages + " messages </speak>",
-            type: AlexaSkill.speechOutputType.SSML
-        }
-    }
+        getTexts(numMessages, function(msgArr){
+            var speechStr = '';
+            msgArr.forEach(function(msg) {
+                speechStr = speechStr + '<p>' + msg.from + ' sent you the message ' + msg.body + '</p>';
+            });
 
-    response.tell(speechOutput);
+            speechOutput = {
+                speech: "<speak> <p>Reading Messages</p> " + speechStr + " </speak>",
+                type: AlexaSkill.speechOutputType.SSML
+            }
+            response.tell(speechOutput);
+        })
+    }
+    
 }
 
 function handleStartMessageRequest(intent, session, response) {
@@ -166,6 +185,5 @@ exports.handler = function (event, context) {
     skill.execute(event, context);
 };
 
-// sendText("words", "Tang", function() {
-//     console.log("done")
-// })
+
+getTexts(3, function(){});
