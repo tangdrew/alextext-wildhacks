@@ -14,9 +14,9 @@ var APP_ID = 'amzn1.ask.skill.0e9e92cd-c015-4796-87a4-1a9dfadafdc7';
 /**
  * Twilio Credentials
  */
-var accountSid = 'AC938472e9120f0c46d2f7e15a61825d4a'; 
-var authToken = '9fede4428c7bd0fc4586a0954da61b9a'; 
-var client = require('twilio')(accountSid, authToken); 
+var accountSid = 'AC938472e9120f0c46d2f7e15a61825d4a';
+var authToken = "9fede4428c7bd0fc4586a0954da61b9a";
+var client = require('twilio')(accountSid, authToken);
 
 var https = require('https');
 
@@ -71,6 +71,22 @@ MessagingSkill.prototype.intentHandlers = {
     }
 };
 
+function sendText(msgBody, callback) {
+    client.messages.create({ 
+        to: "+18327889328", 
+        from: "+12242035200", 
+        body: msgBody
+    }, function(err, message) { 
+        if(err){
+            console.log(err);
+            console.log(message.sid); 
+        }
+        else {
+            callback();
+        }
+    });
+}
+
 function handleReadMessagesRequest(intent, session, response) {
     var numMessages = 5;
     var speechOutput = null;
@@ -118,13 +134,14 @@ function handleStartMessageRequest(intent, session, response) {
 }
 
 function handleSendMessageRequest(intent, session, response) {
-    var message = intent.slots.message;
-
-    var speechOutput = {
-        speech: "<speak> Sending message </speak>",
-        type: AlexaSkill.speechOutputType.SSML
-    };
-    response.tell(speechOutput);
+    var message = intent.slots.message.value;
+    sendText(message, function() {
+        var speechOutput = {
+            speech: "<speak> " + message + " </speak>",
+            type: AlexaSkill.speechOutputType.SSML
+        };
+        response.tell(speechOutput);
+    });
 }
 
 // Create the handler that responds to the Alexa Request.
@@ -133,3 +150,7 @@ exports.handler = function (event, context) {
     var skill = new MessagingSkill();
     skill.execute(event, context);
 };
+
+sendText("dinner time", function(){
+    console.log('done');
+})
