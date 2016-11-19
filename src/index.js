@@ -29,7 +29,8 @@ var contacts = {
     tang: "+18327889328",
     dan: "+16308541819", 
     mom: "+16308541819",
-    susie: "+13234811364"
+    susie: "+13234811364",
+    twilio: "+12242035200"
 }
 
 /**
@@ -179,6 +180,7 @@ function handleStartMessageRequest(intent, session, response) {
 function handleSendMessageRequest(intent, session, response) {
     var message = intent.slots.message.value;
     var recipient = session.attributes.sessionRecipient.toLowerCase();
+    console.log('MESSAGE: ', message);
 
     sendText(message, recipient, function() {
         var speechOutput = {
