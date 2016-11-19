@@ -9,7 +9,7 @@
 /**
  * App ID for the skill
  */
-var APP_ID = 'amzn1.ask.skill.0e9e92cd-c015-4796-87a4-1a9dfadafdc7';
+var APP_ID = 'amzn1.ask.skill.ea33393c-60e7-48f5-ba16-32d361b6013b';
 
 /**
  * Twilio Credentials
@@ -19,6 +19,18 @@ var authToken = "9fede4428c7bd0fc4586a0954da61b9a";
 var client = require('twilio')(accountSid, authToken);
 
 var https = require('https');
+
+/**
+* Contact "Database"
+*/
+
+var contacts = {
+    Cary: "16302615888", 
+    Tang: "+18327889328",
+    Dan: "+16308541819", 
+    Mom: "+16308541819",
+    Susie: "+13234811364"
+}
 
 /**
  * The AlexaSkill Module that has the AlexaSkill prototype and helper functions
@@ -71,9 +83,11 @@ MessagingSkill.prototype.intentHandlers = {
     }
 };
 
-function sendText(msgBody, callback) {
+function sendText(msgBody, recipient, callback) {
+    console.log(recipient)
+    console.log(contacts[recipient])
     client.messages.create({ 
-        to: "+18327889328", 
+        to: contacts[recipient], 
         from: "+12242035200", 
         body: msgBody
     }, function(err, message) { 
@@ -135,9 +149,10 @@ function handleStartMessageRequest(intent, session, response) {
 
 function handleSendMessageRequest(intent, session, response) {
     var message = intent.slots.message.value;
-    sendText(message, function() {
+    var recipient = intent.slots.recipient.value;
+    sendText(message, recipient, function() {
         var speechOutput = {
-            speech: "<speak> " + message + " </speak>",
+            speech: "<speak> Sending " + message + " to " + recipient + " </speak>",
             type: AlexaSkill.speechOutputType.SSML
         };
         response.tell(speechOutput);
@@ -151,6 +166,6 @@ exports.handler = function (event, context) {
     skill.execute(event, context);
 };
 
-sendText("dinner time", function(){
-    console.log('done');
-})
+// sendText("words", "Tang", function() {
+//     console.log("done")
+// })

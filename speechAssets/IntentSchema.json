@@ -24,7 +24,11 @@
         	{
         		"name" : "message",
         		"type" : "AMAZON.LITERAL"
-        	}
+        	},
+          {
+            "name" : "recipient",
+            "type" : "AMAZON.LITERAL"
+          }
         ]
     }
   ]
