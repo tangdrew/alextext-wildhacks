@@ -2,7 +2,7 @@ from twilio.rest import TwilioRestClient
 import csv
 
 contacts = {}
-csvfile = open('contacts.csv')
+csvfile = open('sms-send/contacts.csv')
 reader=csv.reader(csvfile)
 for row in reader:
 	contacts[row[0]] = row[1]
@@ -21,3 +21,4 @@ if mess != 'Nevermind':
 	    to=dest,
 	    from_="+12242035200") # Twilio from-number
 
+messages = client.messages.list()
