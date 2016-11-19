@@ -62,10 +62,26 @@ MessagingSkill.prototype.intentHandlers = {
 };
 
 function handleReadMessagesRequest(intent, session, response) {
-    var speechOutput = {
-        speech: "<speak> These are messages </speak>",
-        type: AlexaSkill.speechOutputType.SSML
+    var numMessages = 5;
+    var speechOutput = null;
+
+    if("value" in intent.slots.numMessages) {
+        numMessages = intent.slots.numMessages.value;
     }
+
+    if(numMessages > 20) {
+        speechOutput = {
+            speech: "<speak> The limit is 20 messages </speak>",
+            type: AlexaSkill.speechOutputType.SSML
+        }
+    }
+    else {
+        speechOutput = {
+            speech: "<speak> Reading " + numMessages + " messages </speak>",
+            type: AlexaSkill.speechOutputType.SSML
+        }
+    }
+
     response.tell(speechOutput);
 }
 
