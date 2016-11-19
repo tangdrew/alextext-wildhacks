@@ -9,7 +9,7 @@
 /**
  * App ID for the skill
  */
-var APP_ID = 'amzn1.ask.skill.ea33393c-60e7-48f5-ba16-32d361b6013b';
+var APP_ID = 'amzn1.ask.skill.0e9e92cd-c015-4796-87a4-1a9dfadafdc7';
 
 /**
  * Twilio Credentials
@@ -25,7 +25,7 @@ var https = require('https');
 */
 
 var contacts = {
-    Cary: "16302615888", 
+    Cary: "+16302615888", 
     Tang: "+18327889328",
     Dan: "+16308541819", 
     Mom: "+16308541819",
@@ -113,6 +113,15 @@ function getTexts(limit, callback) {
     });
 }
 
+function numberToContactName(number) {
+    for(name in contacts) {
+        if(contacts[name] == number){
+            return name;
+        }
+    }
+    return 'Unknown';
+}
+
 function handleReadMessagesRequest(intent, session, response) {
     var numMessages = 5;
     var speechOutput = null;
@@ -131,7 +140,8 @@ function handleReadMessagesRequest(intent, session, response) {
         getTexts(numMessages, function(msgArr){
             var speechStr = '';
             msgArr.forEach(function(msg) {
-                speechStr = speechStr + '<p>' + msg.from + ' sent you the message ' + msg.body + '</p>';
+                var name = numberToContactName(msg.from);
+                speechStr = speechStr + '<p>' + name + ' sent you ' + msg.body + '</p>';
             });
 
             speechOutput = {
