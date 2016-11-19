@@ -1,7 +1,25 @@
 {
   "intents": [
+  	{
+  		"intent": "StartMessageIntent"
+  	},
     {
-        "intent": "ReadMessageIntent"
+        "intent": "ReadMessagesIntent",
+        "slots": [
+        	{
+        		"name": "numMessages",
+        		"type": "AMAZON.NUMBER"
+        	}
+        ]
+    },
+    {
+        "intent": "SendMessageIntent",
+        "slots" : [
+        	{
+        		"name" : "message",
+        		"type" : "AMAZON.LITERAL"
+        	}
+        ]
     }
   ]
 }

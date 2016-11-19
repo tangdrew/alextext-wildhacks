@@ -1,1 +1,3 @@
-ReadMessageIntent read messages
+ReadMessagesIntent read messages
+ReadMessagesIntent read last {numMessages} messages
+
