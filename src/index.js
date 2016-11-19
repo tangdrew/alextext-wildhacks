@@ -109,7 +109,7 @@ function getTexts(limit, callback) {
         for(var i = 0; i < limit; i ++) {
             msgArr.push(data.messages[i]);
         }
-        callback(msgArr);
+        callback(msgArr.reverse());
     });
 }
 
