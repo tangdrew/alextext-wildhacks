@@ -9,16 +9,28 @@
 /**
  * App ID for the skill
  */
-var APP_ID = 'amzn1.ask.skill.0e9e92cd-c015-4796-87a4-1a9dfadafdc7';
+var APP_ID = 'amzn1.ask.skill.ea33393c-60e7-48f5-ba16-32d361b6013b';
 
 /**
  * Twilio Credentials
  */
-var accountSid = 'AC938472e9120f0c46d2f7e15a61825d4a'; 
-var authToken = '9fede4428c7bd0fc4586a0954da61b9a'; 
-var client = require('twilio')(accountSid, authToken); 
+var accountSid = 'AC938472e9120f0c46d2f7e15a61825d4a';
+var authToken = "9fede4428c7bd0fc4586a0954da61b9a";
+var client = require('twilio')(accountSid, authToken);
 
 var https = require('https');
+
+/**
+* Contact "Database"
+*/
+
+var contacts = {
+    Cary: "16302615888", 
+    Tang: "+18327889328",
+    Dan: "+16308541819", 
+    Mom: "+16308541819",
+    Susie: "+13234811364"
+}
 
 /**
  * The AlexaSkill Module that has the AlexaSkill prototype and helper functions
@@ -71,6 +83,36 @@ MessagingSkill.prototype.intentHandlers = {
     }
 };
 
+function sendText(msgBody, recipient, callback) {
+    console.log(recipient)
+    console.log(contacts[recipient])
+    client.messages.create({ 
+        to: contacts[recipient], 
+        from: "+12242035200", 
+        body: msgBody
+    }, function(err, message) { 
+        if(err){
+            console.log(err);
+            console.log(message.sid); 
+        }
+        else {
+            callback();
+        }
+    });
+}
+
+function getTexts(limit, callback) {
+    client.messages.list({
+        to: "+12242035200"
+    },function(err, data) {
+        var msgArr = []
+        for(var i = 0; i < limit; i ++) {
+            msgArr.push(data.messages[i]);
+        }
+        callback(msgArr);
+    });
+}
+
 function handleReadMessagesRequest(intent, session, response) {
     var numMessages = 5;
     var speechOutput = null;
@@ -86,13 +128,20 @@ function handleReadMessagesRequest(intent, session, response) {
         }
     }
     else {
-        speechOutput = {
-            speech: "<speak> Reading " + numMessages + " messages </speak>",
-            type: AlexaSkill.speechOutputType.SSML
-        }
-    }
+        getTexts(numMessages, function(msgArr){
+            var speechStr = '';
+            msgArr.forEach(function(msg) {
+                speechStr = speechStr + '<p>' + msg.from + ' sent you the message ' + msg.body + '</p>';
+            });
 
-    response.tell(speechOutput);
+            speechOutput = {
+                speech: "<speak> <p>Reading Messages</p> " + speechStr + " </speak>",
+                type: AlexaSkill.speechOutputType.SSML
+            }
+            response.tell(speechOutput);
+        })
+    }
+    
 }
 
 function handleStartMessageRequest(intent, session, response) {
@@ -118,13 +167,15 @@ function handleStartMessageRequest(intent, session, response) {
 }
 
 function handleSendMessageRequest(intent, session, response) {
-    var message = intent.slots.message;
-
-    var speechOutput = {
-        speech: "<speak> Sending message </speak>",
-        type: AlexaSkill.speechOutputType.SSML
-    };
-    response.tell(speechOutput);
+    var message = intent.slots.message.value;
+    var recipient = intent.slots.recipient.value;
+    sendText(message, recipient, function() {
+        var speechOutput = {
+            speech: "<speak> Sending " + message + " to " + recipient + " </speak>",
+            type: AlexaSkill.speechOutputType.SSML
+        };
+        response.tell(speechOutput);
+    });
 }
 
 // Create the handler that responds to the Alexa Request.
@@ -133,3 +184,6 @@ exports.handler = function (event, context) {
     var skill = new MessagingSkill();
     skill.execute(event, context);
 };
+
+
+getTexts(3, function(){});
