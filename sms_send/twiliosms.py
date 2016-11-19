@@ -4,7 +4,7 @@ import csv
 # load contacts into dictionary
 
 contacts = {}
-csvfile = open('./contacts.csv')
+csvfile = open('sms_send/contacts.csv')
 reader=csv.reader(csvfile)
 for row in reader:
 	contacts[row[0]] = row[1]
