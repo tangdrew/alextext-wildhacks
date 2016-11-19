@@ -3,11 +3,11 @@ import csv
 
 # load contacts into dictionary
 
-contacts = {}
-csvfile = open('sms_send/contacts.csv')
-reader=csv.reader(csvfile)
-for row in reader:
-	contacts[row[0]] = row[1]
+contacts = {"Coby": "+16508147855", "Susie": "+13234811364", "Tristan": "+14044220074"}
+# csvfile = open('sms_send/contacts.csv')
+# reader=csv.reader(csvfile)
+# for row in reader:
+# 	contacts[row[0]] = row[1]
 
 
 # person = input('Who do you want to text? ')
@@ -19,10 +19,7 @@ auth_token  = "9fede4428c7bd0fc4586a0954da61b9a"  # Your Auth Token from www.twi
 
 client = TwilioRestClient(account_sid, auth_token)
 
-def send():
-	dest = input("Who do you want to text? ")
-	mess = input("What do you want to say? ")
-	
+def send(dest, mess):	
 	if mess != 'Nevermind':
 		message = client.messages.create(
 			body=mess,
@@ -41,8 +38,11 @@ def get_list(phone_number, n):
 		script.append(convo[n-i-1])
 	return script
 		
-send()
+# send()
 
-# c = get_list(contacts["Coby"],4)
-# for i in range(0, len(c)):
-# 	print(c[i].date_sent)
+per = input('What conversation do you want see? ')
+num = int(input('How many texts? '))
+
+c = get_list(contacts[per],num)
+for i in range(0, len(c)):
+	print(c[i].date_sent, c[i].body)
