@@ -50,11 +50,11 @@ MessagingSkill.prototype.eventHandlers.onSessionEnded = function (sessionEndedRe
 
 MessagingSkill.prototype.intentHandlers = {
     // register custom intent handlers
-    "HelloWorldIntent": function (intent, session, response) {
-        response.tellWithCard("Hello World!", "Hello World", "Hello World!");
-    },
     "ReadMessagesIntent": function (intent, session, response) {
         handleReadMessagesRequest(intent, session, response);
+    },
+    "SendMessageRequest": function(intent, session, response) {
+        handleSendMessageRequest(intent, session, response);
     },
     "AMAZON.HelpIntent": function (intent, session, response) {
         response.ask("You can say hello to me!", "You can say hello to me!");
@@ -83,6 +83,35 @@ function handleReadMessagesRequest(intent, session, response) {
     }
 
     response.tell(speechOutput);
+}
+function handleStartMessageRequest(intent, session, response) {
+    var recipient = null;
+
+    if ("value" in intent.slots.recipient) {
+        recipient = intent.slots.recipient.value;
+    }
+    else {
+        followUp = {
+            speech: "<speak> Hey, try that again and include who you want to send your message to. </speak>"
+            type: AlexaSkill.speechOutputType.SSML
+        }
+        response.tell(followUp);
+    }
+
+    output = {
+        speech: "<speak>The recipient looks like:" + tyepof recipient +" </speak>",
+        type: AlexaSkill.speechOutputType.SSML
+    }
+
+    response.tell(output)
+}
+
+
+
+
+}
+function handleSendMessageRequest(intent, session, response) {
+    //pass
 }
 
 // Create the handler that responds to the Alexa Request.

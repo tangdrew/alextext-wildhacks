@@ -1,4 +1,8 @@
 ReadMessagesIntent read messages
 ReadMessagesIntent read last {numMessages} messages
 
+StartMessageIntent send {recipient} a message
+StartMessageIntent send a message to {recipient}
+
+
 
