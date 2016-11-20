@@ -1,15 +1,15 @@
 MessagingSkill = require('./MessagingSkill');
+API = require('./API');
 
-// Create the handler that responds to the Alexa Request.
-exports.handler = function (event, context) {
-    // Create an instance of the Messaging Skill.
-    console.log("EVENT");
-    console.log(event);
-    if(event.request.type == 'IntentRequest') {
+exports.handler = function(event, context, callback) {
+
+    if(event.request == null) {
+        console.log('HTTP Request');
+        API(event, context, callback);
+    }
+    else {
         var skill = new MessagingSkill();
         skill.execute(event, context);
     }
-    else {
-        console.log('HTTP Request');
-    }
+    
 };
