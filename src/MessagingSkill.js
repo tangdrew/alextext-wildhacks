@@ -84,9 +84,6 @@ MessagingSkill.prototype.intentHandlers = {
     "StartReadConversationIntent": function(intent, session, response) {
         handleStartReadConversationIntent(intent, session, response);
     },
-    "ReadConversationIntent": function(intent, session, response) {
-        handleReadConversationIntent(intent, session, response);
-    },
     "AMAZON.HelpIntent": function (intent, session, response) {
         response.ask("You can say hello to me!", "You can say hello to me!");
     }
@@ -233,14 +230,26 @@ function handleStartReadConversationIntent(intent, session, response) {
 
     if ("value" in intent.slots.contact) {
         contact = intent.slots.contact.value.toLowerCase();
-        console.log("Contact is ", contact);
-    } else if (contacts[contact]) {
-        var speechOutput = {
-            speech: "<speak> Reading conversation with " + contact + "</speak>",
-            type: AlexaSkill.speechOutputType.SSML
-        };
-        session.attributes = {sessionContact: contact};
-        respons.ask(output);
+        console.log("Contact is", contact);
+    }
+
+    if (contacts[contact]) {
+        console.log("entering contact branch")
+        var numMessages = 5;
+        getConversation(contact, numMessages, function(msgArr) {
+            var speechStr = '';
+            msgArr.forEach(function(msg){
+                var name = numberToContactName(msg.from);
+                speechStr = speechStr + '<p>' + name + ' sent ' + msg.body + '</p>'; 
+            });
+
+            var speechOutput = {
+                speech: "<speak> " + speechStr + "</speak>",
+                type: AlexaSkill.speechOutputType.SSML
+            }
+            response.tell(speechOutput);
+        })
+
     }
     else {
         var followUp = {
@@ -250,26 +259,23 @@ function handleStartReadConversationIntent(intent, session, response) {
         response.tell(followUp);
     }
 }
-function handleReadConversationIntent(intent, session, response) {
-    var numMessages = intent.slots.numMessages.value;
-    var contact = session.attributes.sessionContact.toLowerCase();
-    console.log('Reading Conversation with ', contact);
-    getConversation(contact, numMessages, function() {
-        // var speechStr = '';
-        // msgArr.forEach(function(msg) {
-        //     var name = numberToContactName(msg.from_);
-        //     speechStr = speechStr + '<p>' + name + ' sent you ' + msg.body + '</p>';
-        // });
+// function handleReadConversationIntent(intent, session, response) {
+//     var numMessages = intent.slots.numMessages.value;
+//     var contact = session.attributes.sessionContact.toLowerCase();
+//     console.log('Reading Conversation with ', contact);
+//     getConversation(contact, numMessages, function() {
+//         // var speechStr = '';
+//         // msgArr.forEach(function(msg) {
+//         //     var name = numberToContactName(msg.from_);
+//         //     speechStr = speechStr + '<p>' + name + ' sent you ' + msg.body + '</p>';
+//         // });
         
-        var speechOutput = {
-            speech: "<speak>reading conversation kind of</speak>",
-            type: AlexaSkill.speechOutputType.SSML
-        }
-        response.tell(speechOutput);
-    });
-}
+//         var speechOutput = {
+//             speech: "<speak> <p>Reading Messages</p></speak>",
+//             type: AlexaSkill.speechOutputType.SSML
+//         }
+//         response.tell(speechOutput);
+//     });
+// }
 
 module.exports = MessagingSkill;
-getConversation("Dan", 5, function(msgArr) {
-    console.log(msgArr[0].body);
-});

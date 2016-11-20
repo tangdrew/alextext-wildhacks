@@ -35,14 +35,6 @@
           "type": "AMAZON.LITERAL"
       }
     ]
-    },
-    {
-      "intent": "ReadConversationIntent",
-      "slots": [
-        {
-          "name": "numMessages",
-          "type": "AMAZON.NUMBER"
-        }]
     }
   ]
 }
