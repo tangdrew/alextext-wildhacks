@@ -2,10 +2,14 @@ ReadMessagesIntent read messages
 ReadMessagesIntent read last {numMessages} messages
 
 StartMessageIntent send {cary|recipient} a message
-StartMessageIntent send a message to {andrew|recipient}
+StartMessageIntent send {twilio|recipient} a message
+StartMessageIntent send a message to {tang|recipient}
+StartMessageIntent send a message to {twilio|recipient}
+
 
 SendMessageIntent {Dinner time|message}
-SendMessageIntent {Time for dinner|message}
 SendMessageIntent {Who wants to cook|message}
 SendMessageIntent {Who is here|message}
 SendMessageIntent {Anyone home|message}
+SendMessageIntent {Hey|message}
+SendMessageIntent {Whats up|message}
