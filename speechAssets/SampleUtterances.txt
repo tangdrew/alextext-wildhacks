@@ -1,6 +1,9 @@
 ReadMessagesIntent read messages
 ReadMessagesIntent read last {numMessages} messages
 
+StartReadConversationIntent read conversation with {coby | contact}
+StartReadConversationIntent read texts from {susie | contact}
+
 StartMessageIntent send {cary|recipient} a message
 StartMessageIntent send a message to {andrew|recipient}
 

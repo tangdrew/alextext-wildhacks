@@ -26,6 +26,23 @@
         		"type" : "AMAZON.LITERAL"
         	}
         ]
+    },
+    {
+      "intent": "StartReadConversationIntent",
+      "slots": [
+        {
+          "name": "contact",
+          "type": "AMAZON.LITERAL"
+      }
+    ]
+    },
+    {
+      "intent": "ReadConversationIntent",
+      "slots": [
+        {
+          "name": "numMessages",
+          "type": "AMAZON.NUMBER"
+        }]
     }
   ]
 }
